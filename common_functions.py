@@ -22,10 +22,14 @@ def getWsData(wb_name, d=os.getcwd(), subdir='\\source\\'):
         ws = sb.sheet_by_index(0)
     return ws
 
-def findInWs(line, ws, strt_col=0, strt_row=0, match=False):
+def findInWs(line, ws, regex=True, strt_col=0, strt_row=0, match=False):
+    if regex == True:
+        print('searchin by regexp')
+    else:
+        print('searching by substring')
     col = strt_col
     row = strt_row
-    found = False
+    found = None
     regexp = re.compile(line)
     while not found:
         if col != 702 and row != 500:
@@ -34,14 +38,23 @@ def findInWs(line, ws, strt_col=0, strt_row=0, match=False):
                 if cell is not None:
                     if match:
                         cell = cell.lower()
-                    m = re.search(regexp, cell)
-                    if m is not None:
-##                        print('data found: %s'%cell)
-                        found = True
-                        return {'col':col, 'row': row}
-                        break
+                    if regex == True:
+                        m = re.search(regexp, cell)
+                        if m is not None:
+    ##                        print('data found: %s'%cell)
+                            found = True
+                            return {'col':col, 'row': row}
+                            break
+                        else:
+                            col += 1
                     else:
-                        col += 1
+                        if line.lower() in cell.lower():
+                            print('data found: %s'%cell)
+                            found = True
+                            return {'col':col, 'row': row}
+                            break
+                        else:
+                            col += 1
                 else:
                     col = 1
                     row += 1

@@ -1,4 +1,5 @@
-# -*- coding: cp1251 -*-
+#!/usr/bin/env/python3
+# -*- coding: utf8 -*-
 import os
 import openpyxl as op
 import xlrd
@@ -12,44 +13,57 @@ import agold
 from common_functions import *
 
 
-suppl_func_dict = {u'тд эстет':'estet',
-                   u'юк эстет':'estet',
-                   u'феррум':'ferrum',
-                   u'клювенков':'klyuvenkov',
-                   u'паршина':'magia',
-                   u'магкаева':'magia',
-                   u'рудакова':'magia',
-                   u'нео-лог':'neolog',
-                   u'а-голд':'agold'}
+# suppl_func_dict = {u'С‚Рґ СЌСЃС‚РµС‚':'estet',
+#                    u'СЋРє СЌСЃС‚РµС‚':'estet',
+#                    u'С„РµСЂСЂСѓРј':'ferrum',
+#                    u'РєР»СЋРІРµРЅРєРѕРІ':'klyuvenkov',
+#                    u'РїР°СЂС€РёРЅР°':'magia',
+#                    u'РјР°РіРєР°РµРІР°':'magia',
+#                    u'СЂСѓРґР°РєРѕРІР°':'magia',
+#                    u'РЅРµРѕ-Р»РѕРі':'neolog',
+#                    u'Р°-РіРѕР»Рґ':'agold',
+#                    u'РєРёСЃРµР»РµРІР°':'magia',
+#                    u'РєРёСЃРµР»С‘РІР°':'magia',
+# 				   u'Р±РёР¶Сѓ С‚СЂРµР·РѕСЂ':'estet'}
 
 
 
-suppl_code_dict = {u'тд эстет':'b00000016',
-                   u'юк эстет':'b00000017',
-                   u'феррум':'b00009910',
-                   u'клювенков':'b00009923',
-                   u'паршина':'b00000005',
-                   u'магкаева':'b00009905',
-                   u'рудакова':'b00009716',
-                   u'нео-лог':'b00009920',
-                   u'а-голд':'b00009749',
-                   u'Индивидуальный предприниматель Рудакова Елена Вениаминовна':'b00009716',
-                   u'Индивидуальный предприниматель Магкаева Алина Ацамазовна':'b00009905'}
+# suppl_code_dict = {u'С‚Рґ СЌСЃС‚РµС‚':'b00000016',
+#                    u'СЋРє СЌСЃС‚РµС‚':'b00000017',
+#                    u'С„РµСЂСЂСѓРј':'b00009910',
+#                    u'РєР»СЋРІРµРЅРєРѕРІ':'b00009923',
+#                    u'РїР°СЂС€РёРЅР°':'b00000005',
+#                    u'РјР°РіРєР°РµРІР°':'b00009905',
+#                    u'СЂСѓРґР°РєРѕРІР°':'b00009716',
+#                    u'РЅРµРѕ-Р»РѕРі':'b00009920',
+#                    u'Р°-РіРѕР»Рґ':'b00009749',
+#                    u'РРЅРґРёРІРёРґСѓР°Р»СЊРЅС‹Р№ РїСЂРµРґРїСЂРёРЅРёРјР°С‚РµР»СЊ Р СѓРґР°РєРѕРІР° Р•Р»РµРЅР° Р’РµРЅРёР°РјРёРЅРѕРІРЅР°':'b00009716',
+#                    u'РРЅРґРёРІРёРґСѓР°Р»СЊРЅС‹Р№ РїСЂРµРґРїСЂРёРЅРёРјР°С‚РµР»СЊ РњР°РіРєР°РµРІР° РђР»РёРЅР° РђС†Р°РјР°Р·РѕРІРЅР°':'b00009905',
+#                    u'РєРёСЃРµР»РµРІР°':'b00010213',
+#                    u'РєРёСЃРµР»С‘РІР°':'b00010213',
+# 				   u'Р±РёР¶Сѓ С‚СЂРµР·РѕСЂ':'b00000014'}
 
-ctrct_code_dict = {u'тд эстет':'13',
-                   u'юк эстет':'14',
-                   u'феррум':'10080',
-                   u'клювенков':'10158',
-                   u'паршина':'2',
-                   u'магкаева':'10074',
-                   u'рудакова':'10174',
-                   u'нео-лог':'10162',
-                   u'а-голд':'9866',
-                   u'Индивидуальный предприниматель Рудакова Елена Вениаминовна':'10174',
-                   u'Индивидуальный предприниматель Магкаева Алина Ацамазовна':'10074'}
+# ctrct_code_dict = {u'С‚Рґ СЌСЃС‚РµС‚':'10378',
+                #    u'СЋРє СЌСЃС‚РµС‚':'14',
+                #    u'С„РµСЂСЂСѓРј':'10080',
+                #    u'РєР»СЋРІРµРЅРєРѕРІ':'10158',
+                #    u'РїР°СЂС€РёРЅР°':'2',
+                #    u'РјР°РіРєР°РµРІР°':'10074',
+                #    u'СЂСѓРґР°РєРѕРІР°':'10174',
+                #    u'РЅРµРѕ-Р»РѕРі':'10162',
+                #    u'Р°-РіРѕР»Рґ':'9866',
+                #    u'РРЅРґРёРІРёРґСѓР°Р»СЊРЅС‹Р№ РїСЂРµРґРїСЂРёРЅРёРјР°С‚РµР»СЊ Р СѓРґР°РєРѕРІР° Р•Р»РµРЅР° Р’РµРЅРёР°РјРёРЅРѕРІРЅР°':'10174',
+                #    u'РРЅРґРёРІРёРґСѓР°Р»СЊРЅС‹Р№ РїСЂРµРґРїСЂРёРЅРёРјР°С‚РµР»СЊ РњР°РіРєР°РµРІР° РђР»РёРЅР° РђС†Р°РјР°Р·РѕРІРЅР°':'10074',
+                #    u'РєРёСЃРµР»РµРІР°':'10519',
+                #    u'РєРёСЃРµР»С‘РІР°':'10519',
+				#    u'Р±РёР¶Сѓ С‚СЂРµР·РѕСЂ':'11'}
+
+
 
 def getContragentsList(table='contragent.xlsx'):
-    contragents = []
+    suppl_func_dict = {}
+    suppl_code_dict = {}
+    ctrct_code_dict = {}
     sb = xlrd.open_workbook(table)
     ws = sb.sheet_by_index(0)
     col = 0
@@ -57,30 +71,32 @@ def getContragentsList(table='contragent.xlsx'):
     while row < ws.nrows:
         try:
 ##            print(ws.cell_value(row, col))
-            contragents.append(ws.cell_value(row, col))
+            suppl_func_dict[ws.cell_value(row, col)] = ws.cell_value(row, 1)
+            suppl_code_dict[ws.cell_value(row, col)] = ws.cell_value(row, 2)
+            ctrct_code_dict[ws.cell_value(row, col)] = ws.cell_value(row, 5)
             row += 1
         except:
             break
-    return contragents
+    return suppl_func_dict, suppl_code_dict, ctrct_code_dict
 
-def defineContragent(ws, cta=getContragentsList()):
+def defineContragent(ws, cta=getContragentsList()[0].keys()):
     if type(ws) == dbfread.dbf.DBF:
-        return u'клювенков'
+        return u'РєР»СЋРІРµРЅРєРѕРІ'
 
     try:
-        m = re.search(u'Название', ws.cell_value(3,0))
+        m = re.search(u'РќР°Р·РІР°РЅРёРµ', ws.cell_value(3,0))
         if m is not None:
-            return u'магкаева'
+            return u'РјР°РіРєР°РµРІР°'
         else:
             pass
     except:
         pass
         
-    if u'п/п' in ws.cell_value(0,0):
-        return u'а-голд'
+    if u'Рї/Рї' in ws.cell_value(0,0):
+        return u'Р°-РіРѕР»Рґ'
     else:
         for ct in cta:
-    ##        print ct
+            # print(ct)
             if findInWs(ct, ws, match=True):
                 return ct
         
@@ -99,12 +115,23 @@ def getTables(subdir, d=os.getcwd()):
     return tables
 
 
-def makeXml(ws, name):
+def getVat(ws):
+    print('VAT FUNCTION')
+    vn = findInWs('РќР”РЎ', ws)
+    print('bez nds', vn)
+    print('END VAT FUNCTION')
+
+
+def makeXml(ws, name, vat):
     result = u'<xml>\r\n'
     result += u'\t<ndoc>%s</ndoc>\r\n'%ws.cell_value(0,1)
     result += u'\t<ddoc>%s</ddoc>\r\n'%ws.cell_value(1,1)
     result += u'\t<supplier_code>%s</supplier_code>\r\n'%suppl_code_dict[ws.cell_value(2,1)]
     result += u'\t<contract_code>%s</contract_code>\r\n'%ctrct_code_dict[ws.cell_value(2,1)]
+    if vat is not None:
+        result += u'\t<vat>%s</vat>\r\n'%vat
+    else:
+        result += u'\t<vat>None</vat>\r\n'
     row = 4
     while row < ws.nrows:
         result += u'\t<stock>\r\n'
@@ -125,34 +152,31 @@ def makeXml(ws, name):
     f = codecs.open(name, 'w', 'utf8')
     f.write(result)
     f.close()
+
+if __name__ == '__main__':
+
+    suppl_func_dict, suppl_code_dict, ctrct_code_dict = getContragentsList()
+    # print(suppl_func_dict)
+    # print(suppl_code_dict)
+    # print(ctrct_code_dict)
     
-tblz = getTables('source')
-counter = 0
-for t in tblz:
-##    print t
-##    try:
-    ws = getWsData(t)
-    ct = defineContragent(ws)
-##    print ct
-    exec(u'%s.main(t, from_="%s")'%(suppl_func_dict[ct],ct))
-##    except Exception as e:
-##        pass
-##        print('could not process %s'%t)
-##        print(e)
-    counter += 1
-print(counter)
+    tblz = getTables('source')
+    counter = 0
+    for t in tblz:
+        print(t)
+        ws = getWsData(t)
+        # print('vat', getVat(ws))
+        ct = defineContragent(ws)
+        print(ct)
+        exec(u'%s.main(t, from_="%s")'%(suppl_func_dict[ct],ct))
+        counter += 1
+        print()
+    print('%s files processed'%counter)
 
-##print('all_info_extracted; now making xmls')
-
-for t in getTables('results'):
-    try:
-        ws = getWsData(t, subdir = '\\results\\')
-        makeXml(ws, 'xml_results\\'+t+'.xml')
-    except Exception as e:
-##        print('cant make xml due to %s'%e)
-        pass
-    
-
-
-
-    
+    for t in getTables('results'):
+        try:
+            ws = getWsData(t, subdir = '\\results\\')
+            makeXml(ws, 'xml_results\\'+t+'.xml', vat='None')
+        except Exception as e:
+    ##        print('cant make xml due to %s'%e)
+            pass

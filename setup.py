@@ -2,7 +2,7 @@ import sys
 from cx_Freeze import setup, Executable
 
 # Dependencies are automatically detected, but it might need fine tuning.
-build_exe_options = {"packages": ["os", "openpyxl"], 'include_files':['source/',
+build_exe_options = {"packages": ["os", "openpyxl", "xlrd", "xlwt"], 'include_files':['source/',
                 'results/',
                 'xml_results/', 'contragent.xlsx']}
 
